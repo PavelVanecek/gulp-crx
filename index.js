@@ -48,6 +48,6 @@ module.exports = function(opt) {
         .catch(onError)
     })
     .catch(onError)
-  );
+  });
 
 }
