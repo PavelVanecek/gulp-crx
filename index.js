@@ -7,9 +7,13 @@ var File = require('vinyl')
 var PluginError = require('plugin-error')
 
 module.exports = function(opt) {
-
+  var files = []
   function transform(file, encoding, done) {
+    files.push(file.path)
+    done()
+  }
 
+  return through.obj(transform, function(done) {
     // TODO proper support for streaming files
     // if (!file.isNull()) return done(null, file);
 
@@ -24,7 +28,7 @@ module.exports = function(opt) {
       done(new PluginError('gulp-crx', err))
     }
 
-    crx.load(file.path).then(function() {
+    crx.load(files).then(function() {
       crx.pack()
         .then(function(crxBuffer) {
           that.push(new File({
@@ -44,9 +48,6 @@ module.exports = function(opt) {
         .catch(onError)
     })
     .catch(onError)
-
-  }
-
-  return through.obj(transform);
+  );
 
 }
